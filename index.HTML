@@ -205,52 +205,51 @@
         </form>
     </div>
 
-    <script>
-        // Passwords are stored as SHA-256 hashes for better security
-        const users = {
-            "admin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", // 1234
-            "user1": "bcb1b2a2c7c3e6c2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2", // pass1 (dummy hash)
-            "john": "b2e98ad6f6eb8508dd6a14cfa704bad7f05f6fb1b8b3e6e3c1e7e2e1e7e2e1e7e2", // doe123 (dummy hash)
-            "alice": "e7c3b3e6e3c1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1", // wonderland (dummy hash)
-            "aslam": "31d21842d257322048c1b53fcd0a7ff1041ae2ae61f023d4180379423c044213" // securepass (dummy hash)
-        };
 
-        // SHA-256 hashing function using SubtleCrypto
-        async function sha256(str) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+  <script>
+    // Hashed credentials (SHA-256)
+    const users = {
+      "admin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",       // 1234
+      "user1": "bcb1b2a2c7c3e6c2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2",       // dummy
+      "john": "b2e98ad6f6eb8508dd6a14cfa704bad7f05f6fb1b8b3e6e3c1e7e2e1e7e2e1e7e2",      // dummy
+      "princesse": "4bab2ab52bdcdb88e62e8063f6fa7dd95e16a1be75ec04c3a1eb0537898b4e84", // wonderland
+      "aslam": "31d21842d257322048c1b53fcd0a7ff1041ae2ae61f023d4180379423c044213"       // securepass
+    };
 
-        async function validateLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMsg');
+    // SHA-256 hash function
+    async function sha256(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
 
-            const hash = await sha256(password);
-            if (users[username] && users[username] === hash) {
-                window.location.href = "home.html";
-            } else {
-                window.location.href = "denied.html";
-            }
-            return false;
-        }
+    // Validate login
+    async function validateLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
 
-        // Show/hide password toggle
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
-        togglePassword.onclick = function() {
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                togglePassword.style.color = "#2980b9";
-            } else {
-                passwordInput.type = "password";
-                togglePassword.style.color = "#aaa";
-            }
-            
-        };
-    </script>
+      const hash = await sha256(password);
+      if (users[username] && users[username] === hash) {
+        // ✅ Store username in sessionStorage
+        sessionStorage.setItem("loggedInUser", username);
+
+        // Redirect to home
+        window.location.href = "home.html";
+      } else {
+        window.location.href = "denied.html";
+      }
+    }
+
+    // Password visibility toggle
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    togglePassword.onclick = () => {
+      const isHidden = passwordInput.type === "password";
+      passwordInput.type = isHidden ? "text" : "password";
+      togglePassword.style.color = isHidden ? "#2980b9" : "#aaa";
+    };
+  </script>
 </body>
 </html>
