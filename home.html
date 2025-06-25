@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 1s ease;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 900px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px 30px;
+      width: 200px;
+      text-align: center;
+      transition: transform 0.3s, background 0.3s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <h1>Welcome, <span id="username">User</span> 👋</h1>
+  <p>Here are some features available to you:</p>
+
+  <div class="features">
+    <div class="card">
+      <h3>Dashboard</h3>
+      <p>Overview of your activities</p>
+    </div>
+    <div class="card">
+      <h3>Profile</h3>
+      <p>Edit your personal info</p>
+    </div>
+    <div class="card">
+      <h3>Messages</h3>
+      <p>Check notifications</p>
+    </div>
+    <div class="card">
+      <h3>Analytics</h3>
+      <p>Track performance</p>
+    </div>
+    <div class="card">
+      <h3>Settings</h3>
+      <p>Customize experience</p>
+    </div>
+  </div>
+
+  <script>
+    // Get username from sessionStorage
+    const username = sessionStorage.getItem("loggedInUser");
+
+    if (username) {
+      document.getElementById("username").textContent = username;
+    } else {
+      // Redirect to login if no session
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      sessionStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
