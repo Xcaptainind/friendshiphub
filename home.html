@@ -2,88 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login Form</title>
-  <style>
-    /* [ SAME CSS AS BEFORE — unchanged for brevity ] */
-    /* ... (CSS remains exactly as you provided — full styles omitted here for clarity) */
-  </style>
-</head>
-<body>
-  <div class="background-bubbles">
-    <div class="bubble bubble1"></div>
-    <div class="bubble bubble2"></div>
-    <div class="bubble bubble3"></div>
-    <div class="bubble bubble4"></div>
-    <div class="bubble bubble5"></div>
-  </div>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form onsubmit="return validateLogin(event)">
-      <div class="error-message" id="errorMsg"></div>
-      <div class="input-group">
-        <input type="text" id="username" placeholder=" " autocomplete="username" required>
-        <label for="username">Username</label>
-      </div>
-      <div class="input-group">
-        <input type="password" id="password" placeholder=" " autocomplete="current-password" required>
-        <label for="password">Password</label>
-        <span class="show-hide" id="togglePassword" title="Show/Hide Password">&#128065;</span>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-
-  <script>
-    // Hashed credentials (SHA-256)
-    const users = {
-      "admin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",       // 1234
-      "user1": "bcb1b2a2c7c3e6c2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2",       // dummy
-      "john": "b2e98ad6f6eb8508dd6a14cfa704bad7f05f6fb1b8b3e6e3c1e7e2e1e7e2e1e7e2",      // dummy
-      "princesse": "4bab2ab52bdcdb88e62e8063f6fa7dd95e16a1be75ec04c3a1eb0537898b4e84", // wonderland
-      "aslam": "31d21842d257322048c1b53fcd0a7ff1041ae2ae61f023d4180379423c044213"       // securepass
-    };
-
-    // SHA-256 hash function
-    async function sha256(str) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(str);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    // Validate login
-    async function validateLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
-
-      const hash = await sha256(password);
-      if (users[username] && users[username] === hash) {
-        // ✅ Store username in sessionStorage
-        sessionStorage.setItem("loggedInUser", username);
-        // ✅ Redirect to home
-        window.location.href = "home.html";
-      } else {
-        // ❌ Redirect to denied
-        window.location.href = "denied.html";
-      }
-    }
-
-    // Password visibility toggle
-    const passwordInput = document.getElementById("password");
-    const togglePassword = document.getElementById("togglePassword");
-    togglePassword.onclick = () => {
-      const isHidden = passwordInput.type === "password";
-      passwordInput.type = isHidden ? "text" : "password";
-      togglePassword.style.color = isHidden ? "#2980b9" : "#aaa";
-    };
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
   <title>Welcome Home</title>
   <style>
     body {
@@ -96,48 +14,36 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 1s ease;
       text-align: center;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     h1 {
       font-size: 3rem;
       margin-bottom: 10px;
     }
-
     p {
       font-size: 1.2rem;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
-
     .features {
       display: flex;
-      flex-wrap: wrap;
       gap: 20px;
+      flex-wrap: wrap;
       justify-content: center;
-      max-width: 900px;
+      max-width: 800px;
     }
-
     .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 20px 30px;
-      width: 200px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 20px;
+      width: 160px;
       text-align: center;
-      transition: transform 0.3s, background 0.3s;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s;
     }
-
     .card:hover {
       transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.25);
     }
-
     .logout-btn {
       position: absolute;
       top: 20px;
@@ -149,9 +55,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
     }
-
     .logout-btn:hover {
       background: #c0392b;
     }
@@ -159,46 +63,30 @@
 </head>
 <body>
   <button class="logout-btn" onclick="logout()">Logout</button>
-
   <h1>Welcome, <span id="username">User</span> 👋</h1>
-  <p>Here are some features available to you:</p>
+  <p>You have successfully logged in!</p>
 
   <div class="features">
-    <div class="card">
-      <h3>Dashboard</h3>
-      <p>Overview of your activities</p>
-    </div>
-    <div class="card">
-      <h3>Profile</h3>
-      <p>Edit your personal info</p>
-    </div>
-    <div class="card">
-      <h3>Messages</h3>
-      <p>Check notifications</p>
-    </div>
-    <div class="card">
-      <h3>Analytics</h3>
-      <p>Track performance</p>
-    </div>
-    <div class="card">
-      <h3>Settings</h3>
-      <p>Customize experience</p>
-    </div>
+    <div class="card"><h3>Dashboard</h3><p>View your summary</p></div>
+    <div class="card"><h3>Profile</h3><p>Edit your info</p></div>
+    <div class="card"><h3>Messages</h3><p>Inbox & updates</p></div>
+    <div class="card"><h3>Analytics</h3><p>Track your growth</p></div>
+    <div class="card"><h3>Settings</h3><p>Preferences</p></div>
   </div>
 
   <script>
-    // Get username from sessionStorage
-    const username = sessionStorage.getItem("loggedInUser");
-
-    if (username) {
-      document.getElementById("username").textContent = username;
-    } else {
-      // Redirect to login if no session
-      window.location.href = "index.html";
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const username = localStorage.getItem("loggedInUser");
+      if (username) {
+        document.getElementById("username").textContent = username;
+      } else {
+        // Redirect back to login if not logged in
+        window.location.href = "index.html";
+      }
+    });
 
     function logout() {
-      sessionStorage.removeItem("loggedInUser");
+      localStorage.removeItem("loggedInUser");
       window.location.href = "index.html";
     }
   </script>
