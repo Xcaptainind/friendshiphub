@@ -6,15 +6,16 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #2c3e50, #3498db);
-      color: #fff;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #2c3e50, #3498db);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     }
     h1 {
       font-size: 3rem;
@@ -28,13 +29,16 @@
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: center;
-      max-width: 800px;
+      max-width: 100%;
+      padding: 20px;
     }
     .card {
       background: rgba(255, 255, 255, 0.15);
       border-radius: 10px;
       padding: 20px;
+      margin: 10px;
       width: 160px;
       text-align: center;
       backdrop-filter: blur(8px);
@@ -59,6 +63,114 @@
     .logout-btn:hover {
       background: #c0392b;
     }
+    button {
+        font-family: inherit;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+        outline: none;
+    }
+
+    button:hover, button:focus {
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+    }
+
+    button:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .features .card .wish {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        color: white;
+        font-weight: bold;
+        z-index: 1;
+    }
+    /* Birthday cap animation */
+    .features .card .wish .cap {
+        position: absolute;
+        left: 50%;
+        top: -60px;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 36px;
+        z-index: 2;
+        animation: capDrop 1.2s cubic-bezier(.5,1.8,.5,1) forwards;
+        pointer-events: none;
+    }
+    @keyframes capDrop {
+        0% {
+            top: -60px;
+            opacity: 0;
+            transform: translateX(-50%) rotate(-20deg) scale(0.7);
+        }
+        60% {
+            top: 0px;
+            opacity: 1;
+            transform: translateX(-50%) rotate(8deg) scale(1.1);
+        }
+        80% {
+            top: -8px;
+            transform: translateX(-50%) rotate(-4deg) scale(0.98);
+        }
+        100% {
+            top: 0px;
+            opacity: 1;
+            transform: translateX(-50%) rotate(0deg) scale(1);
+        }
+    }
+    /* Confetti animation */
+    .features .card .wish .confetti {
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+    .features .card .wish .confetti span {
+        position: absolute;
+        width: 6px;
+        height: 12px;
+        border-radius: 2px;
+        opacity: 0.8;
+        animation: confettiFall 1.2s linear forwards;
+    }
+    .features .card .wish .confetti span:nth-child(1) { background: #f9d423; left: -18px; animation-delay: 0.1s;}
+    .features .card .wish .confetti span:nth-child(2) { background: #e94e77; left: -8px; animation-delay: 0.2s;}
+    .features .card .wish .confetti span:nth-child(3) { background: #23d160; left: 0px; animation-delay: 0.05s;}
+    .features .card .wish .confetti span:nth-child(4) { background: #3498db; left: 8px; animation-delay: 0.15s;}
+    .features .card .wish .confetti span:nth-child(5) { background: #f7b731; left: 18px; animation-delay: 0.25s;}
+    @keyframes confettiFall {
+        0% { top: 0; opacity: 0.8; transform: rotate(0deg);}
+        80% { opacity: 1;}
+        100% { top: 38px; opacity: 0; transform: rotate(40deg);}
+    }
+    /* Button text bounce */
+    .features .card .wish .wish-text {
+        position: relative;
+        z-index: 3;
+        display: inline-block;
+        animation: wishBounce 1.1s cubic-bezier(.5,1.8,.5,1);
+    }
+    @keyframes wishBounce {
+        0% { transform: translateY(0);}
+        20% { transform: translateY(-8px);}
+        40% { transform: translateY(0);}
+        60% { transform: translateY(-4px);}
+        80% { transform: translateY(0);}
+        100% { transform: translateY(0);}
+    }
   </style>
 </head>
 <body>
@@ -67,16 +179,36 @@
   <p>You have successfully logged in!</p>
 
   <div class="features">
-    <div class="card"><h3>Dashboard</h3><p>View your summary</p></div>
-    <div class="card"><h3>Profile</h3><p>Edit your info</p></div>
-    <div class="card"><h3>Messages</h3><p>Inbox & updates</p></div>
-    <div class="card"><h3>Analytics</h3><p>Track your growth</p></div>
-    <div class="card"><h3>Settings</h3><p>Preferences</p></div>
+    <div class="card">
+      <h3>Listen Music</h3>
+      <p>Enjoy your favorite tunes</p>
+      <button onclick="listenMusic()">Listen</button>
+    </div>
+
+    <div class="card">
+      <h3>Profile</h3>
+      <p>Open your info</p>
+      <button onclick="openProfile()">Open</button>
+    </div>
+
+    <div class="card">
+      <h3>Messages</h3>
+      <p>Inbox & updates</p>
+      <button  onclick="openMessages()">Open</button>
+    </div>
+    <div class="card">
+      <h3>Birthday Wishes</h3>
+      <p>Your best wishes from us</p>
+      <button onclick="sendBirthdayWish()" class="wish">Open</button>
+    </div></div>
+
   </div>
 
   <script>
+    // Declare username once for use in all functions
+    const username = localStorage.getItem("loggedInUser");
+
     document.addEventListener("DOMContentLoaded", () => {
-      const username = localStorage.getItem("loggedInUser");
       if (username) {
         document.getElementById("username").textContent = username;
       } else {
@@ -88,6 +220,34 @@
     function logout() {
       localStorage.removeItem("loggedInUser");
       window.location.href = "index.html";
+    }
+    function openMessages() {
+      // Open WhatsApp app with chat to the specified number
+      window.location.href = "whatsapp://send?phone=918331914899";
+    }
+    function openProfile() {
+      // Open profile page based on username
+      if (username === "aslam") {
+        window.location.href = "https://xcaptainind.github.io/personel-portfolio/";
+      } else if (username === "princesse") {
+        window.location.href = "profile_princesse.html";
+      } else {
+        window.location.href = "home.html";
+      }
+    }
+    function listenMusic() {
+      // Open a music streaming service
+      window.location.href = "https://xcaptainind.github.io/media-player/";
+    }
+    function sendBirthdayWish() {
+      // Open profile page based on username
+      if (username === "aslam") {
+        window.location.href = "https://xcaptainind.github.io/imageslider/";
+      } else if (username === "princesse") {
+        window.location.href = "https://xcaptainind.github.io/imageslider/";
+      } else {
+        window.location.href = "home.html";
+      }
     }
   </script>
 </body>
