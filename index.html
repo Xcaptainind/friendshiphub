@@ -205,6 +205,261 @@
         </form>
     </div>
 
+
+  <script>
+    // Hashed credentials (SHA-256)
+    const users = {
+      "admin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",       // 1234
+      "user1": "bcb1b2a2c7c3e6c2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2e1e7e2",       // dummy
+      "john": "b2e98ad6f6eb8508dd6a14cfa704bad7f05f6fb1b8b3e6e3c1e7e2e1e7e2e1e7e2",      // dummy
+      "princesse": "4bab2ab52bdcdb88e62e8063f6fa7dd95e16a1be75ec04c3a1eb0537898b4e84", // wonderland
+      "aslam": "31d21842d257322048c1b53fcd0a7ff1041ae2ae61f023d4180379423c044213"       // securepass
+    };
+
+    // SHA-256 hash function
+    async function sha256(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // Validate login
+    async function validateLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      const hash = await sha256(password);
+      if (users[username] && users[username] === hash) {
+        // ✅ Store username in sessionStorage
+        sessionStorage.setItem("loggedInUser", username);
+
+        // Redirect to home
+        window.location.href = "home.html";
+      } else {
+        window.location.href = "denied.html";
+      }
+    }
+
+    // Password visibility toggle
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    togglePassword.onclick = () => {
+      const isHidden = passwordInput.type === "password";
+      passwordInput.type = isHidden ? "text" : "password";
+      togglePassword.style.color = isHidden ? "#2980b9" : "#aaa";
+    };
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Form</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #2c3e50 0%, #3498db 100%);
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .background-bubbles {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.25;
+            animation: floatBubble 10s infinite linear;
+        }
+        .bubble1 { width: 120px; height: 120px; background: #fff; left: 10%; top: 80%; animation-delay: 0s;}
+        .bubble2 { width: 80px; height: 80px; background: #3498db; left: 70%; top: 90%; animation-delay: 2s;}
+        .bubble3 { width: 60px; height: 60px; background: #fff; left: 50%; top: 100%; animation-delay: 4s;}
+        .bubble4 { width: 100px; height: 100px; background: #2980b9; left: 80%; top: 85%; animation-delay: 1s;}
+        .bubble5 { width: 40px; height: 40px; background: #fff; left: 30%; top: 95%; animation-delay: 3s;}
+
+        @keyframes floatBubble {
+            to {
+                transform: translateY(-120vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.95);
+            padding: 48px 40px 32px 40px;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(44,62,80,0.25);
+            animation: slideIn 1s cubic-bezier(.68,-0.55,.27,1.55) forwards, glow 2s infinite alternate;
+            transform: translateY(-60px) scale(0.95);
+            opacity: 0;
+            min-width: 340px;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 16px 40px rgba(44,62,80,0.25), 0 0 0px #3498db; }
+            to { box-shadow: 0 16px 40px rgba(44,62,80,0.25), 0 0 24px #3498db44; }
+        }
+
+        h2 {
+            margin-bottom: 28px;
+            color: #2980b9;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 700;
+            font-size: 2rem;
+            animation: fadeIn 1.5s 0.2s both;
+            text-shadow: 0 2px 8px #3498db22;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
+            animation: pulse 0.7s;
+        }
+        .input-group label {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            color: #aaa;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: 0.2s;
+            background: white;
+            padding: 0 4px;
+        }
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 0.85rem;
+            color: #3498db;
+            background: white;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 12px 14px 12px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f8fafd;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+            margin-bottom: 0;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px #3498db33;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(0.97); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #3498db 60%, #2980b9 100%);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 16px #3498db33;
+            transition: background 0.3s, transform 0.2s;
+            animation: fadeIn 1s 0.3s both;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #2980b9 60%, #3498db 100%);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 24px #2980b944;
+        }
+
+        .show-hide {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 1.1rem;
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .show-hide:hover { color: #3498db; }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            min-height: 22px;
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translateX(-2px);}
+            20%, 80% { transform: translateX(4px);}
+            30%, 50%, 70% { transform: translateX(-8px);}
+            40%, 60% { transform: translateX(8px);}
+        }
+    </style>
+</head>
+<body>
+    <div class="background-bubbles">
+        <div class="bubble bubble1"></div>
+        <div class="bubble bubble2"></div>
+        <div class="bubble bubble3"></div>
+        <div class="bubble bubble4"></div>
+        <div class="bubble bubble5"></div>
+    </div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form onsubmit="return validateLogin(event)">
+            <div class="error-message" id="errorMsg"></div>
+            <div class="input-group">
+                <input type="text" id="username" placeholder=" " autocomplete="username" required>
+                <label for="username">Username</label>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder=" " autocomplete="current-password" required>
+                <label for="password">Password</label>
+                <span class="show-hide" id="togglePassword" title="Show/Hide Password">&#128065;</span>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
     <script>
         // Passwords are stored as SHA-256 hashes for better security
         const users = {
